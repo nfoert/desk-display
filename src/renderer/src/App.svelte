@@ -1,5 +1,9 @@
 <script lang="ts">
+  import Clock from './components/Clock.svelte'
+
   const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 </script>
 
-<h1 class="font-bold text-3xl">Hello world!</h1>
+<div class="flex justify-center items-center bg-slate-800 w-screen h-screen">
+  <Clock></Clock>
+</div>
