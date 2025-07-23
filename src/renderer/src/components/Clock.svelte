@@ -14,7 +14,7 @@
 
   $: minutes = now.toLocaleTimeString('en-US', {
     minute: '2-digit'
-  });
+  }).padStart(2, '0');
 
   $: date = now.toLocaleDateString('en-US', {
     month: '2-digit',
@@ -40,3 +40,4 @@
     {date}
   </span>
 </div>
+
