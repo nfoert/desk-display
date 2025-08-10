@@ -1,43 +1,48 @@
 <script lang="ts">
+  // import { writable } from "svelte/store";
+
   let now = new Date();
   let colonOpacity = 1;
 
   setInterval(() => {
     now = new Date();
-    colonOpacity = colonOpacity === 1 ? 0.5 : 1;
   }, 1000);
 
-  $: hours = now.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    hour12: true
-  }).replace(/^0/, '').replace(/ AM| PM/, '');
+  setInterval(() => {
+    colonOpacity = colonOpacity === 1 ? 0.5 : 1
+  }, 500);
 
-  $: minutes = now.toLocaleTimeString('en-US', {
-    minute: '2-digit'
-  }).padStart(2, '0');
-
-  $: date = now.toLocaleDateString('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: '2-digit'
-  });
-</script>
-
-<style>
-  .colon {
-    transition: opacity 0.5s ease-in-out;
-    display: inline-block;
-    width: 0.6ch; /* tight spacing */
-    text-align: center;
+  function getHours() {
+    return now
+      .toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        hour12: true
+      })
+      .replace(/^0/, '')
+      .replace(/ AM| PM/, '');
   }
-</style>
+
+  function getMinutes() {
+    return now.toLocaleTimeString('en-US', {
+      minute: '2-digit'
+    }).padStart(2, '0');
+  }
+
+  function getDate() {
+    return now.toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: '2-digit'
+    });
+  }
+</script>
 
 <div class="flex flex-col items-center">
   <span class="text-6xl text-white">
-    {hours}<span class="colon" style={`opacity: ${colonOpacity}`}>:</span>{minutes}
+    {getHours()}<span class="transition-all ease-in-out duration-300" style={`opacity: ${colonOpacity}`}>:</span>{getMinutes()}
   </span>
   <span class="text-white text-xl mt-1">
-    {date}
+    {getDate()}
   </span>
 </div>
 
