@@ -2,6 +2,8 @@
   import { onMount } from "svelte"
 
     let open = false;
+    let mode = "";
+    let hideTimeout;
 
     let modes = {
         "main": {
@@ -50,26 +52,34 @@
         }
     }
 
-    function setMode(mode, show=false) {
-        if (mode in modes) {
-            document.querySelector("#button-1 p").innerHTML = modes[mode]["button-1"]["text"];
-            document.querySelector("#button-1 > i").classList = modes[mode]["button-1"]["icon"];
+    function setMode(newMode, show=false) {
+        mode = newMode.toLowerCase();
 
-            document.querySelector("#button-2 p").innerHTML = modes[mode]["button-2"]["text"];
-            document.querySelector("#button-2 > i").classList = modes[mode]["button-2"]["icon"];
+        if (newMode in modes) {
+            document.querySelector("#button-1 p").innerHTML = modes[newMode]["button-1"]["text"];
+            document.querySelector("#button-1 > i").classList = modes[newMode]["button-1"]["icon"];
 
-            document.querySelector("#button-3 p").innerHTML = modes[mode]["button-3"]["text"];
-            document.querySelector("#button-3 > i").classList = modes[mode]["button-3"]["icon"];
+            document.querySelector("#button-2 p").innerHTML = modes[newMode]["button-2"]["text"];
+            document.querySelector("#button-2 > i").classList = modes[newMode]["button-2"]["icon"];
 
-            document.querySelector("#button-4 p").innerHTML = modes[mode]["button-4"]["text"];
-            document.querySelector("#button-4 > i").classList = modes[mode]["button-4"]["icon"];
+            document.querySelector("#button-3 p").innerHTML = modes[newMode]["button-3"]["text"];
+            document.querySelector("#button-3 > i").classList = modes[newMode]["button-3"]["icon"];
+
+            document.querySelector("#button-4 p").innerHTML = modes[newMode]["button-4"]["text"];
+            document.querySelector("#button-4 > i").classList = modes[newMode]["button-4"]["icon"];
 
             if (show) {
                 open = true;
 
-                setTimeout(() => {
+                // cancel previous hide timer
+                if (hideTimeout) {
+                    clearTimeout(hideTimeout);
+                }
+
+                // start a new hide timer
+                hideTimeout = setTimeout(() => {
                     open = false;
-                }, 2000)
+                }, 2000);
             }
         }
     }
@@ -81,6 +91,15 @@
             
             setMode(name, show);
         });
+
+        // TODO: Handle hardware buttons over GPIO
+        window.addEventListener('keydown', (event) => {
+            const buttonIndex = parseInt(event.key, 10) - 1;
+            if (buttonIndex >= 0 && buttonIndex < 4) {
+                const buttonAction = modes[mode][`button-${buttonIndex + 1}`]["action"];
+                window.dispatchEvent(new CustomEvent(buttonAction));
+            }
+        });
         
         setTimeout(() => {
             setMode("main");
@@ -89,8 +108,8 @@
 </script>
 
 <div class="flex flex-col absolute top-0 left-0 h-screen z-10 py-8 pl-4
-            bg-gradient-to-r from-10% to-transparent to-90%
-            transition-all duration-500 ease-in-out justify-between px-4"
+            bg-gradient-to-r from-5% to-transparent to-90%
+            transition-all duration-500 ease-in-out justify-between px-4 pointer-events-none"
      class:w-screen={open}
      class:w-20={!open}
      class:from-slate-900={open}

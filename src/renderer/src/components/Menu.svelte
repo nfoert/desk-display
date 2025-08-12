@@ -3,8 +3,9 @@
     import google_calendar_icon from "../assets/google-calendar.png";
     import todoist_icon from "../assets/todoist.png";
     import home_assistant_icon from "../assets/home-assistant.png";
+  import { onMount } from "svelte"
 
-    let open = true;
+    let open = false;
 
     const delays = [0, 100, 200, 100, 200, 300];
 
@@ -17,6 +18,18 @@
     //         window.dispatchEvent(new CustomEvent("buttons_set_mode", { detail: { name: "main", show: false } }));
     //     }
     // }, 3000);
+
+    onMount(() => {
+        window.addEventListener("menu_open", () => {
+            open = true;
+            window.dispatchEvent(new CustomEvent("buttons_set_mode", { detail: { name: "menu", show: true } }));
+        });
+
+        window.addEventListener("menu_close", () => {
+            open = false;
+            window.dispatchEvent(new CustomEvent("buttons_set_mode", { detail: { name: "main", show: true } }));
+        });
+    })
 </script>
 
 <div class="flex flex-row z-5 w-screen h-screen absolute top-0 left-0 transition-all duration-300 ease-in-out bg-slate-900/50"
