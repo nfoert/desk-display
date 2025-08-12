@@ -1,23 +1,14 @@
 <script>
+    import { onMount } from "svelte"
+
     import spotify_icon from "../assets/spotify.png";
     import google_calendar_icon from "../assets/google-calendar.png";
     import todoist_icon from "../assets/todoist.png";
     import home_assistant_icon from "../assets/home-assistant.png";
-  import { onMount } from "svelte"
 
     let open = false;
 
     const delays = [0, 100, 200, 100, 200, 300];
-
-    // setInterval(() => {
-    //     open = !open;
-
-    //     if (open) {
-    //         window.dispatchEvent(new CustomEvent("buttons_set_mode", { detail: { name: "menu", show: true } }));
-    //     } else {
-    //         window.dispatchEvent(new CustomEvent("buttons_set_mode", { detail: { name: "main", show: false } }));
-    //     }
-    // }, 3000);
 
     onMount(() => {
         window.addEventListener("menu_open", () => {

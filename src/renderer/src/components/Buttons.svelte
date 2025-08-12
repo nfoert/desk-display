@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte"
+    import { onMount } from "svelte"
 
     let open = false;
     let mode = "";
@@ -100,6 +100,22 @@
                 window.dispatchEvent(new CustomEvent(buttonAction));
             }
         });
+
+        if (window.gpio) {
+            if (window.gpio) {
+                window.gpio.onButton((value) => {
+                    if (value === 27) {
+                        window.dispatchEvent(new CustomEvent(modes[mode]["button-1"]["action"]));
+                    } else if (value === 23) {
+                        window.dispatchEvent(new CustomEvent(modes[mode]["button-2"]["action"]));
+                    } else if (value === 22) {
+                        window.dispatchEvent(new CustomEvent(modes[mode]["button-3"]["action"]));
+                    } else if (value === 17) {
+                        window.dispatchEvent(new CustomEvent(modes[mode]["button-4"]["action"]));
+                    }
+                });
+            }
+        }
         
         setTimeout(() => {
             setMode("main");

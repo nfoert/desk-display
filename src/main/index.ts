@@ -2,10 +2,13 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { Gpio } from "onoff";
+
+let mainWindow: BrowserWindow;
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 320,
     height: 240,
     show: false,
@@ -72,3 +75,26 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// Setup GPIO button
+const button_1 = new Gpio(27, 'in', 'both');
+const button_2 = new Gpio(23, 'in', 'both');
+const button_3 = new Gpio(22, 'in', 'both');
+const button_4 = new Gpio(17, 'in', 'both');
+
+const buttons = [button_1, button_2, button_3, button_4]
+
+buttons.forEach((button, index) => {
+  button.watch((err, value) => {
+    if (err) {
+      console.error(`Error reading button ${index + 1}:`, err)
+      return
+    }
+    mainWindow.webContents.send('gpio-button', { id: index + 1, state: value })
+  })
+})
+
+app.on('ready', createWindow)
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit()
+})
