@@ -16,6 +16,13 @@ $ npm install
 $ npm run dev
 ```
 
+You'll need to delete the `dist` directory, and then rename the `out` directory to `dist`, then run `npm run dev` again
+
+### Running in Production
+```bash
+lxterminal --command="npm run dev --enable-features=UseOzonePlatform --ozone-platform=wayland"
+```
+
 ### Build
 
 ```bash
